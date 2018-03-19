@@ -71,11 +71,13 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
       activePointers -= 1;
     }
 
-    if (getState() == STATE_ACTIVE && activePointers < 2) {
+    if (event.getActionMasked() == MotionEvent.ACTION_UP) {
       end();
-    } else if (event.getActionMasked() == MotionEvent.ACTION_UP) {
-      fail();
+    } else if (getState() == STATE_ACTIVE && activePointers < 2) {
+      mLastScaleFactor = 1f;
     }
+
+    numberOfTouches = activePointers;
   }
 
   @Override
@@ -83,6 +85,10 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
     mScaleGestureDetector = null;
     mLastVelocity = 0f;
     mLastScaleFactor = 1f;
+  }
+
+  public int getNumberOfTouches() {
+    return numberOfTouches;
   }
 
   public double getScale() {
