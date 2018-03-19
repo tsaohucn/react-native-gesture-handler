@@ -8,12 +8,35 @@
 
 #import "RNPinchHandler.h"
 
+#import <UIKit/UIGestureRecognizerSubclass.h>
+
+@interface RNBetterPinchGestureRecognizer : UIPinchGestureRecognizer
+
+- (id)initWithGestureHandler:(RNGestureHandler*)gestureHandler;
+
+@end
+
+@implementation RNBetterPinchGestureRecognizer 
+{
+
+}
+
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event 
+{
+	[super touchesMoved:touches withEvent:event];
+   if ([[event allTouches]count] == 1) {
+   	self.scale = 1;
+   }
+}
+
+@end
+
 @implementation RNPinchGestureHandler
 
 - (instancetype)initWithTag:(NSNumber *)tag
 {
     if ((self = [super initWithTag:tag])) {
-        _recognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
+        _recognizer = [[RNBetterPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleGesture:)];
     }
     return self;
 }
