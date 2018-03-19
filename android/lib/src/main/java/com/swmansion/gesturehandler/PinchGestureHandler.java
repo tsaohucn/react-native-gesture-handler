@@ -14,6 +14,8 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
   private float mStartingSpan;
   private float mSpanSlop;
 
+  private int numberOfTouches;
+
   private ScaleGestureDetector.OnScaleGestureListener mGestureListener =
           new ScaleGestureDetector.OnScaleGestureListener() {
 
