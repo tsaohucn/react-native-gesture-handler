@@ -288,6 +288,7 @@ public class RNGestureHandlerModule extends ReactContextBaseJavaModule {
       eventData.putDouble("translationY", PixelUtil.toDIPFromPixel(handler.getTranslationY()));
       eventData.putDouble("velocityX", PixelUtil.toDIPFromPixel(handler.getVelocityX()));
       eventData.putDouble("velocityY", PixelUtil.toDIPFromPixel(handler.getVelocityY()));
+      eventData.putDouble("numberOfTouches", handler.getNumberOfTouches());
     }
   }
 
