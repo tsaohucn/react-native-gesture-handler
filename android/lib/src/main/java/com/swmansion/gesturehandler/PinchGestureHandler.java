@@ -14,7 +14,7 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
   private float mStartingSpan;
   private float mSpanSlop;
 
-  private int activePointers;
+  private int numberOfTouches;
 
   private ScaleGestureDetector.OnScaleGestureListener mGestureListener =
           new ScaleGestureDetector.OnScaleGestureListener() {
@@ -68,7 +68,7 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
       mScaleGestureDetector.onTouchEvent(event);
     }
 
-    activePointers = event.getPointerCount();
+    int activePointers = event.getPointerCount();
     if (event.getActionMasked() == MotionEvent.ACTION_POINTER_UP) {
       activePointers -= 1;
     }
@@ -78,6 +78,7 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
     } else if (getState() == STATE_ACTIVE && activePointers < 2) {
       mLastScaleFactor = 1f;
     }
+    numberOfTouches = activePointers;
   }
 
   @Override
@@ -88,7 +89,7 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
   }
 
   public int getNumberOfTouches() {
-    return activePointers;
+    return numberOfTouches;
   }
 
   public double getScale() {

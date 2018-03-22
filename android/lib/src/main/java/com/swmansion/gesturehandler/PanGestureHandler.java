@@ -25,7 +25,7 @@ public class PanGestureHandler extends GestureHandler<PanGestureHandler> {
   private float mMinVelocitySq = MIN_VALUE_IGNORE;
   private int mMinPointers = DEFAULT_MIN_POINTERS;
   private int mMaxPointers = DEFAULT_MAX_POINTERS;
-  private int activePointers;
+  private int numberOfTouches;
 
   private float mStartX, mStartY;
   private float mOffsetX, mOffsetY;
@@ -233,9 +233,12 @@ public class PanGestureHandler extends GestureHandler<PanGestureHandler> {
   protected void onHandle(MotionEvent event) {
     int state = getState();
     int action = event.getActionMasked();
-    activePointers = event.getPointerCount();
+    int activePointers = event.getPointerCount();
     if (action == MotionEvent.ACTION_POINTER_UP || action == MotionEvent.ACTION_POINTER_DOWN) {
       // update offset if new pointer gets added or removed
+      if (action == MotionEvent.ACTION_POINTER_UP) {
+        activePointers -= 1;
+      }
       mOffsetX += mLastX - mStartX;
       mOffsetY += mLastY - mStartY;
 
@@ -253,7 +256,7 @@ public class PanGestureHandler extends GestureHandler<PanGestureHandler> {
       mLastEventOffsetY = event.getRawY() - event.getY();
     }
 
-    if (state == STATE_UNDETERMINED && activePointers >= mMinPointers) {
+    if (state == STATE_UNDETERMINED && event.getPointerCount() >= mMinPointers) {
       mStartX = mLastX;
       mStartY = mLastY;
       mOffsetX = 0;
@@ -274,7 +277,7 @@ public class PanGestureHandler extends GestureHandler<PanGestureHandler> {
       } else {
         fail();
       }
-    } else if (action == MotionEvent.ACTION_POINTER_DOWN && activePointers > mMaxPointers) {
+    } else if (action == MotionEvent.ACTION_POINTER_DOWN && event.getPointerCount() > mMaxPointers) {
       // When new finger is placed down (POINTER_DOWN) we check if MAX_POINTERS is not exceeded
       if (state == STATE_ACTIVE) {
         cancel();
@@ -282,7 +285,7 @@ public class PanGestureHandler extends GestureHandler<PanGestureHandler> {
         fail();
       }
     } else if (action == MotionEvent.ACTION_POINTER_UP && state == STATE_ACTIVE
-            && activePointers < mMinPointers) {
+            && event.getPointerCount() < mMinPointers) {
       // When finger is lifted up (POINTER_UP) and the number of pointers falls below MIN_POINTERS
       // threshold, we only want to take an action when the handler has already activated. Otherwise
       // we can still expect more fingers to be placed on screen and fulfill MIN_POINTERS criteria.
@@ -297,6 +300,7 @@ public class PanGestureHandler extends GestureHandler<PanGestureHandler> {
         activate();
       }
     }
+    numberOfTouches = activePointers;
   }
 
   @Override
@@ -308,7 +312,7 @@ public class PanGestureHandler extends GestureHandler<PanGestureHandler> {
   }
 
   public int getNumberOfTouches() {
-    return activePointers;
+    return numberOfTouches;
   }
 
   public float getTranslationX() {
