@@ -4,16 +4,13 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ViewConfiguration;
+import android.util.Log;
+import com.facebook.react.common.ReactConstants;
 
 public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
 
   private ScaleGestureDetector mScaleGestureDetector;
   private double mLastScaleFactor;
-  private double mLastVelocity;
-
-  private float mStartingSpan;
-  private float mSpanSlop;
-
   private int numberOfTouches;
 
   private ScaleGestureDetector.OnScaleGestureListener mGestureListener =
@@ -21,22 +18,18 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-      double prevScaleFactor = mLastScaleFactor;
-      mLastScaleFactor *= detector.getScaleFactor();
-      long delta = detector.getTimeDelta();
-      if (delta > 0) {
-        mLastVelocity = (mLastScaleFactor - prevScaleFactor) / delta;
-      }
-      if (Math.abs(mStartingSpan - detector.getCurrentSpan()) >= mSpanSlop
-              && getState() == STATE_BEGAN) {
+      mLastScaleFactor = detector.getScaleFactor();
+      if (getState() == STATE_BEGAN) {
         activate();
       }
-      return true;
+      return false;
     }
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-      mStartingSpan = detector.getCurrentSpan();
+      mPreviousSpan = mScaleGestureDetector.getPreviousSpan();
+      detector.setQuickScaleEnabled(false);
+      detector.setStylusScaleEnabled(false);
       return true;
     }
 
@@ -59,7 +52,6 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
       mLastScaleFactor = 1f;
       mScaleGestureDetector = new ScaleGestureDetector(context, mGestureListener);
       ViewConfiguration configuration = ViewConfiguration.get(context);
-      mSpanSlop = configuration.getScaledTouchSlop();
 
       begin();
     }
@@ -94,10 +86,6 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
 
   public double getScale() {
     return mLastScaleFactor;
-  }
-
-  public double getVelocity() {
-    return mLastVelocity;
   }
 
   public float getFocalPointX() {

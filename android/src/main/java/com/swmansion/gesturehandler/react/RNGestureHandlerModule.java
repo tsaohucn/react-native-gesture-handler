@@ -313,7 +313,6 @@ public class RNGestureHandlerModule extends ReactContextBaseJavaModule {
       eventData.putDouble("scale", handler.getScale());
       eventData.putDouble("focalX", PixelUtil.toDIPFromPixel(handler.getFocalPointX()));
       eventData.putDouble("focalY", PixelUtil.toDIPFromPixel(handler.getFocalPointY()));
-      eventData.putDouble("velocity", handler.getVelocity());
       eventData.putDouble("numberOfTouches", handler.getNumberOfTouches());
     }
   }
