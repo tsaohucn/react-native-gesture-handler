@@ -27,7 +27,6 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-      mPreviousSpan = mScaleGestureDetector.getPreviousSpan();
       detector.setQuickScaleEnabled(false);
       detector.setStylusScaleEnabled(false);
       return true;
@@ -48,7 +47,6 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
   protected void onHandle(MotionEvent event) {
     if (getState() == STATE_UNDETERMINED) {
       Context context = getView().getContext();
-      mLastVelocity = 0f;
       mLastScaleFactor = 1f;
       mScaleGestureDetector = new ScaleGestureDetector(context, mGestureListener);
       ViewConfiguration configuration = ViewConfiguration.get(context);
@@ -76,7 +74,6 @@ public class PinchGestureHandler extends GestureHandler<PinchGestureHandler> {
   @Override
   protected void onReset() {
     mScaleGestureDetector = null;
-    mLastVelocity = 0f;
     mLastScaleFactor = 1f;
   }
 
